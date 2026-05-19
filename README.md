@@ -120,6 +120,8 @@ Both tables use `UNIQUE (ticker, date)` — reloading data is always safe (upser
 
 ## Charts
 
+![SPY sample chart](docs/SPY.png)
+
 Each ticker produces a two-panel chart saved to `charts/<TICKER>.png`:
 
 - **Top:** Close price with SMA-20 and SMA-50 overlaid
