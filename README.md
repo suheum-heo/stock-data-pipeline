@@ -158,7 +158,7 @@ All tables use upsert — reloading data is always safe.
 
 ## Dashboard
 
-![SPY sample chart](docs/SPY.png)
+![Dashboard](docs/dashboard.png)
 
 Four tabs served on Streamlit Cloud:
 
@@ -170,6 +170,8 @@ Four tabs served on Streamlit Cloud:
 ---
 
 ## Alerts
+
+![Slack alert](docs/slack-alert.png)
 
 `alert.py` sends a daily Slack message every weekday with:
 - Volatility rankings for all 8 tickers
