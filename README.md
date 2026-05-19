@@ -137,8 +137,11 @@ The pipeline runs automatically every weekday at 6pm via cron:
 
 Output is appended to `pipeline.log`. To register manually:
 ```bash
+# Get your absolute path first
+cd /path/to/stock-data-pipeline && pwd
+
 crontab -e
-# add: 0 18 * * 1-5 /Users/shheo21/Dev/stock-data-pipeline/pipeline.sh
+# add: 0 18 * * 1-5 <paste pwd output>/pipeline.sh
 ```
 
 ---
