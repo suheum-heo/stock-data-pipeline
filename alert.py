@@ -24,20 +24,27 @@ def check_and_alert():
             ORDER BY ticker, date DESC
         """)).fetchall()
 
+    rows = sorted(rows, key=lambda r: r.volatility_20 or 0, reverse=True)
     spikes = [r for r in rows if r.volatility_20 and r.volatility_20 > VOLATILITY_THRESHOLD]
+    report_date = rows[0].date if rows else "N/A"
 
-    if not spikes:
-        print("  All tickers below volatility threshold — no alert sent.")
-        return
+    lines = [f"*Daily Market Summary* — {report_date}"]
 
-    lines = [f"*Volatility Spike Alert* — {spikes[0].date}"]
-    for r in spikes:
-        lines.append(f"• *{r.ticker}*: vol={r.volatility_20:.1%}  RSI={r.rsi_14:.1f}")
+    if spikes:
+        lines.append(f"\n:rotating_light: *Volatility Spike* (>{VOLATILITY_THRESHOLD:.0%})")
+        for r in spikes:
+            lines.append(f"  • *{r.ticker}*: vol={r.volatility_20:.1%}  RSI={r.rsi_14:.1f}")
+
+    lines.append("\n*Volatility Rankings (20d ann.)*")
+    for r in rows:
+        bar = "█" * int((r.volatility_20 or 0) * 20)
+        flag = " :rotating_light:" if r.volatility_20 and r.volatility_20 > VOLATILITY_THRESHOLD else ""
+        lines.append(f"  {r.ticker:<5} {r.volatility_20:.1%}  {bar}{flag}")
 
     payload = {"text": "\n".join(lines)}
     resp = requests.post(webhook_url, json=payload, timeout=10)
     resp.raise_for_status()
-    print(f"  Alert sent for: {[r.ticker for r in spikes]}")
+    print(f"  Summary sent. Spikes: {[r.ticker for r in spikes] or 'none'}")
 
 
 if __name__ == "__main__":
