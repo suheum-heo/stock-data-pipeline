@@ -5,3 +5,4 @@ __pycache__/
 charts/
 pipeline.log
 .env
+.streamlit/secrets.toml

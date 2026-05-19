@@ -1,16 +1,29 @@
+import os
+
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 
-from config import DB_URL, TICKERS
+from config import TICKERS
+
+load_dotenv()
 
 st.set_page_config(page_title="Stock Pipeline Dashboard", layout="wide")
 
+
+def _db_url() -> str:
+    # Streamlit Cloud injects secrets; fall back to .env / local for dev
+    if "DATABASE_URL" in st.secrets:
+        return st.secrets["DATABASE_URL"]
+    return os.getenv("DATABASE_URL", "postgresql://localhost/stock_pipeline")
+
+
 @st.cache_resource
 def get_engine():
-    return create_engine(DB_URL)
+    return create_engine(_db_url())
 
 @st.cache_data(ttl=3600)
 def load_prices():
